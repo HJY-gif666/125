@@ -1,2 +1,7 @@
 scikit-learn
 pycaret
+catboost
+streamlit
+pandas
+scikit-learn
+matplotlib
