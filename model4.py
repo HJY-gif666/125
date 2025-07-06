@@ -3,6 +3,7 @@ import pickle
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import LabelEncoder
 
 # 加载预训练的模型
 try:
@@ -31,24 +32,25 @@ st.dataframe(feature_ranges)
 
 # 创建输入框，确保输入的值在特征的有效范围内
 feature_values = []
+label_encoder = LabelEncoder()
+
 for feature in input_columns:
     min_val = feature_ranges.loc[feature, 'min']
     max_val = feature_ranges.loc[feature, 'max']
-    
-    # 对特定列进行保留两位小数
-    if feature in ['Unemployment', 'Inflation', 'GDP']:
-        user_input = st.number_input(f"请输入 {feature} 的值 (最小值: {min_val}, 最大值: {max_val})", 
-                                    value=float(min_val), 
-                                    min_value=float(min_val), 
-                                    max_value=float(max_val))  
-        # 显示保留两位小数
-        st.write(f"当前 {feature} 输入值为：{round(user_input, 2):.2f}")
-    else:
-        user_input = st.number_input(f"请输入 {feature} 的值 (最小值: {min_val}, 最大值: {max_val})", 
-                                    value=int(min_val), 
-                                    min_value=int(min_val), 
-                                    max_value=int(max_val), 
-                                    step=1)  # 其他列为整数
+
+    # 如果是分类特征，需要使用LabelEncoder进行编码
+    if df[feature].dtype == 'object':  # 分类数据
+        st.write(f"{feature} 是分类特征，将进行编码转换为整数。")
+        df[feature] = label_encoder.fit_transform(df[feature])  # 转换为整数
+        user_input = st.selectbox(f"请选择 {feature} 的值", options=df[feature].unique())
+    else:  # 数值型数据
+        if feature in ['Unemployment', 'Inflation', 'GDP']:  # 保留两位小数
+            user_input = st.number_input(f"请输入 {feature} 的值 (最小值: {min_val}, 最大值: {max_val})", 
+                                         value=float(min_val), min_value=float(min_val), max_value=float(max_val))
+            st.write(f"当前 {feature} 输入值为：{round(user_input, 2):.2f}")
+        else:  # 整数类型输入
+            user_input = st.number_input(f"请输入 {feature} 的值 (最小值: {min_val}, 最大值: {max_val})", 
+                                         value=int(min_val), min_value=int(min_val), max_value=int(max_val), step=1)
         
     feature_values.append(user_input)
 
@@ -67,7 +69,6 @@ if st.button("预测"):
 
         # 如果是分类任务，返回类别标签
         st.success(f"预测的目标值 (Target)：{prediction[0]}")
-
     except ValueError as e:
         st.error(f"无效的输入值：{e}")
     except Exception as e:
