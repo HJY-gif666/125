@@ -68,14 +68,11 @@ if st.button("预测"):
         with open('scaler.pkl', 'rb') as f:
             scaler = pickle.load(f)  # 加载Scaler对象
 
-        # 使用Scaler进行标准化
-        feature_values_scaled = scaler.transform([feature_values])  # 使用相同的标准化器进行转换
-
         # 使用模型进行预测
-        prediction = model1.predict(feature_values_scaled)  # 使用适当的模型进行预测
+        prediction[0] = model1.predict(feature_values)  # 使用适当的模型进行预测
 
         # 输出预测结果
-        st.write("预测结果为：", prediction)
+        st.write("预测结果为：", prediction[0])
 
         # 如果预测结果为 0，则显示“没毕业”；如果预测结果为 1，则显示“毕业了”
         if prediction[0] == 0:
