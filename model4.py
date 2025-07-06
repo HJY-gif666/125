@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 # 加载预训练的模型
-model1 = pickle.load(open('best_model_non.pkl', 'rb'))  # 确保模型文件路径正确
+model1 = pickle.load(open('best_model_non1.pkl', 'rb'))  # 确保模型文件路径正确
 model2 = pickle.load(open('best_model_int.pkl', 'rb'))
 
 # 加载CSV文件，获取特征名称和范围
@@ -43,10 +43,13 @@ if st.button("预测"):
         scaler = StandardScaler()
         feature_values_scaled = scaler.fit_transform([feature_values])  # 确保输入是二维数组
 
-        # 检查模型是否加载成功
-        if model1 is not None:
+        # 检查模型是否加载成功，并确认其类型
+        if model1 is not None and hasattr(model1, 'predict'):
             st.write("模型加载成功！")
-        
+        else:
+            st.error("模型加载失败，请检查模型文件！")
+            raise ValueError("模型加载失败")
+
         # 确保预测输入的形状是二维数组
         feature_values_scaled = np.array(feature_values_scaled).reshape(1, -1)
 
