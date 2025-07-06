@@ -34,19 +34,28 @@ feature_values = []
 for feature in input_columns:
     min_val = feature_ranges.loc[feature, 'min']
     max_val = feature_ranges.loc[feature, 'max']
-    user_input = st.number_input(f"请输入 {feature} 的值 (最小值: {min_val}, 最大值: {max_val})", 
-                                value=float(min_val), 
-                                min_value=float(min_val), 
-                                max_value=float(max_val))
+    
+    # 对特定列进行保留两位小数
+    if feature in ['Unemployment', 'Inflation', 'GDP']:
+        user_input = st.number_input(f"请输入 {feature} 的值 (最小值: {min_val}, 最大值: {max_val})", 
+                                    value=float(min_val), 
+                                    min_value=float(min_val), 
+                                    max_value=float(max_val), 
+                                    format="%.2f")  # 保留两位小数
+    else:
+        user_input = st.number_input(f"请输入 {feature} 的值 (最小值: {min_val}, 最大值: {max_val})", 
+                                    value=int(min_val), 
+                                    min_value=int(min_val), 
+                                    max_value=int(max_val), 
+                                    step=1)  # 其他列为整数
+        
     feature_values.append(user_input)
 
 # 预测按钮
 if st.button("预测"):
     try:
         # 特征标准化（确保使用相同的数据集来拟合标准化器）
-        # 假设训练时已经使用了标准化，使用训练时的标准化器进行转换
-        # 如果您训练模型时保存了标准化器 scaler，您应加载它并应用于预测数据
-        scaler = StandardScaler()  
+        scaler = StandardScaler()
         feature_values_scaled = scaler.fit_transform([feature_values])  # 确保输入是二维数组
 
         # 确保预测输入的形状是二维数组
