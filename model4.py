@@ -55,7 +55,8 @@ for feature in input_columns:
 if st.button("预测"):
     try:
         # 特征标准化（确保使用相同的数据集来拟合标准化器）
-        scaler = StandardScaler()
+        # 假设训练时已经使用了标准化，使用训练时的标准化器进行转换
+        scaler = StandardScaler()  
         feature_values_scaled = scaler.fit_transform([feature_values])  # 确保输入是二维数组
 
         # 确保预测输入的形状是二维数组
