@@ -74,8 +74,15 @@ if st.button("预测"):
         # 使用模型进行预测
         prediction = model1.predict(feature_values_scaled)  # 使用适当的模型进行预测
 
-        # 如果是分类任务，返回类别标签
-        st.success(f"预测的目标值 (Target)：{prediction[0]}")
+        # 输出预测结果
+        st.write("预测结果为：", prediction)
+
+        # 如果预测结果为 0，则显示“没毕业”；如果预测结果为 1，则显示“毕业了”
+        if prediction[0] == 0:
+            st.success(f"预测的目标值 (Target)：没毕业")
+        elif prediction[0] == 1:
+            st.success(f"预测的目标值 (Target)：毕业了")
+
     except ValueError as e:
         st.error(f"无效的输入值：{e}")
     except Exception as e:
