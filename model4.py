@@ -40,8 +40,9 @@ for feature in input_columns:
         user_input = st.number_input(f"请输入 {feature} 的值 (最小值: {min_val}, 最大值: {max_val})", 
                                     value=float(min_val), 
                                     min_value=float(min_val), 
-                                    max_value=float(max_val), 
-                                    format="%.2f")  # 保留两位小数
+                                    max_value=float(max_val))  
+        # 显示保留两位小数
+        st.write(f"当前 {feature} 输入值为：{round(user_input, 2):.2f}")
     else:
         user_input = st.number_input(f"请输入 {feature} 的值 (最小值: {min_val}, 最大值: {max_val})", 
                                     value=int(min_val), 
@@ -54,13 +55,12 @@ for feature in input_columns:
 # 预测按钮
 if st.button("预测"):
     try:
-        # 特征标准化（确保使用相同的数据集来拟合标准化器）
-        # 假设训练时已经使用了标准化，使用训练时的标准化器进行转换
-        scaler = StandardScaler()  
-        feature_values_scaled = scaler.fit_transform([feature_values])  # 确保输入是二维数组
+        # 加载已保存的Scaler
+        with open('scaler.pkl', 'rb') as f:
+            scaler = pickle.load(f)  # 加载Scaler对象
 
-        # 确保预测输入的形状是二维数组
-        feature_values_scaled = np.array(feature_values_scaled).reshape(1, -1)
+        # 使用Scaler进行标准化
+        feature_values_scaled = scaler.transform([feature_values])  # 使用相同的标准化器进行转换
 
         # 使用模型进行预测
         prediction = model1.predict(feature_values_scaled)  # 使用适当的模型进行预测
