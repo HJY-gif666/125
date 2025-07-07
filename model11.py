@@ -33,7 +33,7 @@ st.write(' ')
 # 显示封面图片
 image_path = '/mnt/data/图片1.tif'
 st.image(image_path, caption="欢迎使用模型预测", use_column_width=True)
-image = Image.open("Domestic and International.tif")
+image = Image.open("Domestic and International.jpg")
 resized_image = image.resize((430, 200))
 
 # 加载预训练模型
