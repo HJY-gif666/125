@@ -30,7 +30,7 @@ st.write("The valid range for each input feature is as follows:")
 st.dataframe(feature_ranges)
 
 # Create input boxes in a 3-column layout
-columns = st.beta_columns(3)  # Create three columns
+columns = st.columns(3)  # Create three columns
 
 feature_values = []
 label_encoder = LabelEncoder()
