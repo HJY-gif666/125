@@ -45,7 +45,12 @@ for feature in input_columns:
         user_input = st.selectbox(f"Select a value for {feature}", options=df[feature].unique())
     
     else:  # For numeric features
-        if feature in ['Unemployment', 'Inflation']:  # Keep one decimal place
+        if feature == 'Nationality':  # For Nationality, restrict input to values between 1 and 21
+            user_input = st.number_input(f"Enter the value for {feature} (min: 1, max: 21)", 
+                                         value=1, min_value=1, max_value=21, step=1)
+            st.write(f"Current input value for {feature} is: {user_input}")
+        
+        elif feature in ['Unemployment', 'Inflation']:  # Keep one decimal place
             user_input = st.number_input(f"Enter the value for {feature} (min: {min_val}, max: {max_val})", 
                                          value=float(min_val), min_value=float(min_val), max_value=float(max_val), step=0.1, format="%.1f")
             st.write(f"Current input value for {feature} is: {round(user_input, 1):.1f}")
