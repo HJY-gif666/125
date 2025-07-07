@@ -4,35 +4,42 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 
-# Load pre-trained models
+# 加载预训练模型
 try:
-    model1 = pickle.load(open('best_model_non1.pkl', 'rb'))  # Ensure the model file path is correct
+    model1 = pickle.load(open('best_model_non1.pkl', 'rb'))  # 确保模型文件路径正确
     model2 = pickle.load(open('best_model_int.pkl', 'rb'))
-    st.write("Model loaded successfully!")
+    st.write("模型加载成功！")
 except Exception as e:
-    st.error(f"Model loading failed: {e}")
+    st.error(f"模型加载失败: {e}")
 
-# Load the CSV file, retrieve feature names and ranges
-df = pd.read_csv('Dataset-Non.csv')  # Load the uploaded CSV file
+# 加载CSV文件，获取特征名称和范围
+df = pd.read_csv('Dataset-Non.csv')  # 加载上传的CSV文件
 
-# Get feature columns (assuming the last column is the target column)
-input_columns = df.columns[:-1]  # Get all features excluding the target column
-target_column = df.columns[-1]   # Assume the last column is the target column (Target)
+# 获取特征列（假设最后一列是目标列）
+input_columns = df.columns[:-1]  # 获取所有特征（不包括目标列）
+target_column = df.columns[-1]   # 假设最后一列是目标列
 
-# Get the min and max values of features
-feature_ranges = df[input_columns].describe().transpose()[['min', 'max']]  # Get min and max for each feature
+# 获取每个特征的最小值和最大值
+feature_ranges = df[input_columns].describe().transpose()[['min', 'max']]  # 获取每个特征的最小值和最大值
 
-# Create Streamlit interface
-st.title("Model Prediction Application")
+# 创建Streamlit界面
+st.title("模型预测应用")
 
-# Display the first image from GitHub (Domestic and International.tif)
-st.image("https://github.com/yourusername/yourrepo/raw/main/images/Domestic%20and%20International.tif", caption="Domestic and International")
+# 使用列布局展示标题和图片
+col1, col2 = st.columns([2, 1])
 
-# Display feature ranges
-st.write("The valid range for each input feature is as follows:")
+with col1:
+    st.image("/mnt/data/微信图片_20250707143821.png", caption="预测系统")  # 更新图片路径（如果需要）
+with col2:
+    st.markdown("### **CFPR-钢接头的粘结强度与失效模式预测**")
+    st.markdown("由：湖北工业大学 王松波博士与爱丁堡大学")
+    st.markdown("邮箱：Wangsonbo@hbut.edu.cn | Tim.stanford@ed.ac.uk")
+
+# 显示特征范围的表格
+st.write("### 各输入特征的有效范围如下：")
 st.dataframe(feature_ranges)
 
-# Create input boxes, ensure values are within valid ranges for features using sliders
+# 创建输入框，确保每个特征的值在有效范围内，使用滑块
 feature_values = []
 label_encoder = LabelEncoder()
 
@@ -40,75 +47,75 @@ for feature in input_columns:
     min_val = feature_ranges.loc[feature, 'min']
     max_val = feature_ranges.loc[feature, 'max']
 
-    # For categorical features, use LabelEncoder to convert to integers
-    if df[feature].dtype == 'object':  # Categorical data
-        st.write(f"{feature} is a categorical feature and will be encoded as integers.")
-        df[feature] = label_encoder.fit_transform(df[feature])  # Convert to integers
-        user_input = st.selectbox(f"Select a value for {feature}", options=df[feature].unique())
+    # 对于类别特征，使用LabelEncoder转换为整数
+    if df[feature].dtype == 'object':  # 类别数据
+        st.write(f"{feature} 是一个类别特征，将被编码为整数。")
+        df[feature] = label_encoder.fit_transform(df[feature])  # 转换为整数
+        user_input = st.selectbox(f"为 {feature} 选择一个值", options=df[feature].unique())
     
-    else:  # For numeric features
-        if feature == 'Nationality':  # For Nationality, restrict input to values between 1 and 21
-            user_input = st.slider(f"Select the value for {feature} (min: 1, max: 21)", 
+    else:  # 对于数值特征
+        if feature == 'Nationality':  # 对于国籍，限制输入在1到21之间
+            user_input = st.slider(f"为 {feature} 选择一个值 (最小值: 1, 最大值: 21)", 
                                    min_value=1, max_value=21, value=1, step=1)
-            st.write(f"Current input value for {feature} is: {user_input}")
+            st.write(f"当前输入值为 {feature} 是: {user_input}")
         
-        elif feature in ['Unemployment', 'Inflation']:  # Keep one decimal place
-            user_input = st.slider(f"Select the value for {feature} (min: {min_val}, max: {max_val})", 
+        elif feature in ['Unemployment', 'Inflation']:  # 保留一位小数
+            user_input = st.slider(f"为 {feature} 选择一个值 (最小值: {min_val}, 最大值: {max_val})", 
                                    min_value=float(min_val), max_value=float(max_val), value=float(min_val), step=0.1)
-            st.write(f"Current input value for {feature} is: {round(user_input, 1):.1f}")
+            st.write(f"当前输入值为 {feature} 是: {round(user_input, 1):.1f}")
         
-        elif feature == 'GDP':  # Keep two decimal places
-            user_input = st.slider(f"Select the value for {feature} (min: {min_val}, max: {max_val})", 
+        elif feature == 'GDP':  # 保留两位小数
+            user_input = st.slider(f"为 {feature} 选择一个值 (最小值: {min_val}, 最大值: {max_val})", 
                                    min_value=float(min_val), max_value=float(max_val), value=float(min_val), step=0.01)
-            st.write(f"Current input value for {feature} is: {round(user_input, 2):.2f}")
+            st.write(f"当前输入值为 {feature} 是: {round(user_input, 2):.2f}")
         
-        else:  # Other numeric features, integer input
-            user_input = st.slider(f"Select the value for {feature} (min: {min_val}, max: {max_val})", 
+        else:  # 其他数值特征，整数输入
+            user_input = st.slider(f"为 {feature} 选择一个值 (最小值: {min_val}, 最大值: {max_val})", 
                                    min_value=int(min_val), max_value=int(max_val), value=int(min_val), step=1)
         
     feature_values.append(user_input)
 
-if st.button("Predict"):
+if st.button("预测"):
     try:
-        # Load the saved Scaler
+        # 加载保存的Scaler
         with open('scaler.pkl', 'rb') as f:
-            scaler = pickle.load(f)  # Load the Scaler object
+            scaler = pickle.load(f)  # 加载Scaler对象
 
-        # Use the Scaler for standardization
-        feature_values_scaled = scaler.transform([feature_values])  # Apply the same scaler for transformation
+        # 使用Scaler进行标准化
+        feature_values_scaled = scaler.transform([feature_values])  # 使用相同的Scaler进行转换
 
-        # Check if Nationality feature is in the valid range
-        nationality_index = df.columns.get_loc('Nationality')  # Get the index of the Nationality column
-        nationality_value = feature_values[nationality_index]  # Get the value entered for Nationality
+        # 检查Nationality特征是否在有效范围内
+        nationality_index = df.columns.get_loc('Nationality')  # 获取Nationality列的索引
+        nationality_value = feature_values[nationality_index]  # 获取输入的Nationality值
 
-        if 2 <= nationality_value <= 21:  # If the value of Nationality is between 2 and 21
-            # Use the best_model_int.pkl for prediction
-            prediction = model2.predict(feature_values_scaled)  # Use the integer model for prediction
-            st.write("Prediction result using best_model_int.pkl:", prediction)
+        if 2 <= nationality_value <= 21:  # 如果Nationality值在2到21之间
+            # 使用best_model_int.pkl进行预测
+            prediction = model2.predict(feature_values_scaled)  # 使用整数模型进行预测
+            st.write("使用best_model_int.pkl的预测结果:", prediction)
 
             if prediction[0] == 0:
-                st.success(f"Predicted target value: Not Graduated")
+                st.success(f"预测的目标值：未毕业")
             elif prediction[0] == 1:
-                st.success(f"Predicted target value: Graduated")
-                # Display the second image (Graduate.png) if the prediction is 1 (Graduated)
-                st.image("https://github.com/yourusername/yourrepo/raw/main/images/Graduate.png", caption="Graduated!")
+                st.success(f"预测的目标值：已毕业")
+                # 如果预测结果为1（已毕业），显示第二张图片（Graduate.png）
+                st.image("https://github.com/yourusername/yourrepo/raw/main/images/Graduate.png", caption="已毕业！")
             else:
-                st.warning(f"Prediction result is out of expected range: {prediction[0]}")
+                st.warning(f"预测结果超出预期范围: {prediction[0]}")
         else:
-            # Use the best_model_non1.pkl for prediction
-            prediction = model1.predict(feature_values_scaled)  # Use the non-integer model for prediction
-            st.write("Prediction result using best_model_non1.pkl:", prediction)
+            # 使用best_model_non1.pkl进行预测
+            prediction = model1.predict(feature_values_scaled)  # 使用非整数模型进行预测
+            st.write("使用best_model_non1.pkl的预测结果:", prediction)
 
             if prediction[0] == 0:
-                st.success(f"Predicted target value: Not Graduated")
+                st.success(f"预测的目标值：未毕业")
             elif prediction[0] == 1:
-                st.success(f"Predicted target value: Graduated")
-                # Display the second image (Graduate.png) if the prediction is 1 (Graduated)
-                st.image("https://github.com/yourusername/yourrepo/raw/main/images/Graduate.png", caption="Graduated!")
+                st.success(f"预测的目标值：已毕业")
+                # 如果预测结果为1（已毕业），显示第二张图片（Graduate.png）
+                st.image("https://github.com/yourusername/yourrepo/raw/main/images/Graduate.png", caption="已毕业！")
             else:
-                st.warning(f"Prediction result is out of expected range: {prediction[0]}")
+                st.warning(f"预测结果超出预期范围: {prediction[0]}")
 
     except ValueError as e:
-        st.error(f"Invalid input value: {e}")
+        st.error(f"无效的输入值: {e}")
     except Exception as e:
-        st.error(f"An error occurred: {e}")
+        st.error(f"发生错误: {e}")
