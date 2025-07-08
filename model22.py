@@ -36,12 +36,16 @@ image = Image.open("Domestic and International.jpg")
 resized_image = image.resize((430, 200))
 
 # 打开并调整图片大小
-try:
-    image = Image.open("Domestic and International.jpg")  # 确保图片路径正确
-    resized_image = image.resize((567, 449))  # 调整图片大小
-    st.image(resized_image, caption="Domestic and international students", use_container_width=True)  # 显示图片
-except Exception as e:
-    st.error(f"加载图片时出错: {e}")
+
+  # 打开图片
+image = Image.open("Domestic and International.jpg")  # 确保图片路径正确
+
+# 调整图片大小
+resized_image = image.resize((567, 449))
+
+# 显示调整后的图片
+st.image(resized_image, caption="Domestic and international students", use_container_width=True)
+    
 
 # Display the image centered
 st.image(resized_image, use_column_width=False)
