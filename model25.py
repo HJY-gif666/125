@@ -28,17 +28,7 @@ st.markdown("""
     Email: Wangsongbo@hbut.edu.cn; 
     </div>
     """, unsafe_allow_html=True)
-
 st.write(' ')
-# Open and resize the image
-image = Image.open("Domestic and International.jpg")
-resized_image = image.resize((430, 200))
-
-# 打开并调整图片大小
-image = Image.open("Domestic and International.jpg")  # 确保图片路径正确
-resized_image = image.resize((567, 449))
-# 显示调整后的图片
-st.image(resized_image, caption="Domestic and international students", use_container_width=True)
 
 # Input widgets
 st.sidebar.subheader('Input features for single prediction')
@@ -62,9 +52,9 @@ Scholarship = st.sidebar.slider('Scholarship', 0, 1, 0)
 Age = st.sidebar.slider("Age", 18, 59, 23)
 First = st.sidebar.slider("1st semester approved course", 0, 18, 9)
 Second = st.sidebar.slider("2nd semester approved course", 0, 12, 4)
-Unemployment = st.sidebar.slider("Unemployment rate", 7.6, 16.2, 11)
-Inflation = st.sidebar.slider("Inflation rate", -0.8, 3.7, 1)
-GDP = st.sidebar.slider("GDP", -4.06, 3.51, 0)
+Unemployment = st.sidebar.slider("Unemployment rate", 7.6, 16.2, 11.0)
+Inflation = st.sidebar.slider("Inflation rate", -0.8, 3.7, 1.0)
+GDP = st.sidebar.slider("GDP", -4.06, 3.51, 1.00)
 
 # 加载预训练模型
 model1 = pickle.load(open('best_model_non1.pkl', 'rb'))  # 确保模型文件路径正确
