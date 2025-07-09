@@ -154,4 +154,19 @@ if st.sidebar.button('Predict'):
                         ]
                         rows.append(row)
 
-                    # Create DataFrame with two columns:
+                    # Create DataFrame with two columns: Feature Name 1, Feature Name 2
+                    rows_df = pd.DataFrame(rows, columns=['Feature Name 1', 'Feature Name 2'])
+
+                    # Display the DataFrame with 20px font size for the text in Streamlit
+                    st.dataframe(rows_df.style.set_properties(**{'font-size': '20px'}), use_container_width=True)
+
+                with col5:
+                    st.image("Graduate_student.jpg", caption="")  # Display image in the center column
+
+            else:
+                st.warning(f"Prediction result exceeds expected range: {prediction[0]}")
+
+    except ValueError as e:
+        st.error(f"Invalid input value: {e}")
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
