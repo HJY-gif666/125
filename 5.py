@@ -83,18 +83,18 @@ if st.sidebar.button('Predict'):
             elif prediction[0] == 0:
                 st.success("Predicted outcome: Graduated")
                 
-                # Impact factors ranking display
-                st.markdown("<h2 style='font-size: 28px;'>Impact factors ranking:</h2>", unsafe_allow_html=True)
-                st.markdown("<p style='font-size: 24px;'>1. 2nd semester approved course</p>", unsafe_allow_html=True)
-                st.markdown("<p style='font-size: 24px;'>2. 1st semester approved course</p>", unsafe_allow_html=True)
-                st.markdown("<p style='font-size: 24px;'>3. Tuition fee</p>", unsafe_allow_html=True)
-                st.markdown("<p style='font-size: 24px;'>4. Course type</p>", unsafe_allow_html=True)
-                st.markdown("<p style='font-size: 24px;'>5. Debtor</p>", unsafe_allow_html=True)
+                col1, col2, col3 = st.columns([5, 1, 5])  # Center column is larger
+                with col1:
+                    # Impact factors ranking display
+                    st.markdown("<h2 style='font-size: 28px;'>Impact factors ranking:</h2>", unsafe_allow_html=True)
+                    st.markdown("<p style='font-size: 24px;'>1. 2nd semester approved course</p>", unsafe_allow_html=True)
+                    st.markdown("<p style='font-size: 24px;'>2. 1st semester approved course</p>", unsafe_allow_html=True)
+                    st.markdown("<p style='font-size: 24px;'>3. Tuition fee</p>", unsafe_allow_html=True)
+                    st.markdown("<p style='font-size: 24px;'>4. Course type</p>", unsafe_allow_html=True)
+                    st.markdown("<p style='font-size: 24px;'>5. Debtor</p>", unsafe_allow_html=True)
 
-                # Use st.columns() for centering
-                col3, col4, col5 = st.columns([4, 1, 3])  # Center column is larger
                 with col3:
-                    # 修改为每行两个特征值（包括特征名和对应的值）
+                    # Modify to display feature names and values
                     rows = []
                     for i in range(0, len(new_data.columns), 2):
                         feature_name_1 = new_data.columns[i]
@@ -102,15 +102,22 @@ if st.sidebar.button('Predict'):
                         feature_name_2 = new_data.columns[i+1] if i+1 < len(new_data.columns) else ''
                         value_2 = new_data.iloc[0, i+1] if i+1 < len(new_data.columns) else ''
 
+                        # Store the feature name and corresponding value
                         row = [f'{feature_name_1}: {value_1}', f'{feature_name_2}: {value_2}']
                         rows.append(row)
 
-                    # Create a DataFrame with feature names and their corresponding values
-                    rows_df = pd.DataFrame(rows, columns=['Feature 1', 'Feature 2'])
+                    # Create a DataFrame with feature names and values
+                    rows_df = pd.DataFrame(rows, columns=['Feature Name 1', 'Feature Name 2'])
                     st.dataframe(rows_df, use_container_width=True)
 
+                # Display images
+                col3, col4, col5 = st.columns([4, 1, 3])  # Center column is larger
+                with col3:
+                    st.markdown("<h1 style='color: blue; font-size: 28px;'>Process:</h1>", unsafe_allow_html=True)
+                    st.image("process.jpg", caption="Process Overview")
+
                 with col5:
-                    st.image("Graduate_student.jpg", caption="")  # Display image in the center column
+                    st.image("Graduate_student.jpg", caption="Graduate Student")  # Display image
 
             else:
                 st.warning(f"Prediction result exceeds expected range: {prediction[0]}")
@@ -133,7 +140,7 @@ if st.sidebar.button('Predict'):
                 # Use st.columns() for centering
                 col3, col4, col5 = st.columns([3, 1, 3])  # Center column is larger
                 with col3:
-                    # 修改为每行两个特征值（包括特征名和对应的值）
+                    # Modify to display feature names and values
                     rows = []
                     for i in range(0, len(new_data.columns), 2):
                         feature_name_1 = new_data.columns[i]
@@ -141,15 +148,16 @@ if st.sidebar.button('Predict'):
                         feature_name_2 = new_data.columns[i+1] if i+1 < len(new_data.columns) else ''
                         value_2 = new_data.iloc[0, i+1] if i+1 < len(new_data.columns) else ''
 
+                        # Store the feature name and corresponding value
                         row = [f'{feature_name_1}: {value_1}', f'{feature_name_2}: {value_2}']
                         rows.append(row)
 
-                    # Create a DataFrame with feature names and their corresponding values
-                    rows_df = pd.DataFrame(rows, columns=['Feature 1', 'Feature 2'])
+                    # Create a DataFrame with feature names and values
+                    rows_df = pd.DataFrame(rows, columns=['Feature Name 1', 'Feature Name 2'])
                     st.dataframe(rows_df, use_container_width=True)
 
                 with col5:
-                    st.image("Graduate_student.jpg", caption="")  # Display image in the center column
+                    st.image("Graduate_student.jpg", caption="Graduate Student")  # Display image
 
             else:
                 st.warning(f"Prediction result exceeds expected range: {prediction[0]}")
